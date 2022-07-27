@@ -56,12 +56,12 @@ class MovieService
     public function show(array $request): array
     {
         try {
-            $params = ValidateService::paramsFilterData($request);
-            if ($params['error']) {
-                throw new Exception($params['message']);
-            }
+            $params = ValidateService::rectifyParams($request);
 
-            $returnDatas = MovieRepo::getJoinGenreTypeVote($params['condition']);
+            $returnDatas = match (true) {
+                isset($params['description']) => MovieRepo::getGenreTypeVoteWithDescription($params['description']),
+                default => MovieRepo::getGenreTypeVoteWithoutDescription(),
+            };
             if ($returnDatas === false) {
                 throw new Exception("Erro ao buscar os Filmes/Séries. Por favor tente mais tarde");
             }

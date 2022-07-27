@@ -36,20 +36,49 @@ class MovieRepo
         ]);
     }
 
-    public static function getJoinGenreTypeVote(array $conditions): mixed
+    public static function getGenreTypeVoteWithDescription(string $description): mixed
     {
         return Movie::join('genre', 'movie.genre_id', '=', 'genre.id')
             ->join('type_entertainment', 'movie.type_entertainment_id', '=', 'type_entertainment.id')
             ->leftJoin('vote', 'movie.id', '=', 'vote.movie_id')
-            ->where($conditions)
+            ->where('movie.title', 'like', "%$description%")
+            ->orWhere('movie.description', 'like', "%$description%")
+            ->orWhere('genre.name', 'like', "%$description%")
+            ->orWhere('type_entertainment.name', 'like', "%$description%")
             ->select(
-                'movie.title as titulo',
-                'movie.description as descricao',
-                'movie.duration as duracao',
-                'movie.age_classification as classificacao_idade',
-                'genre.name as genero',
-                'type_entertainment.name as tipo',
-                DB::raw('COUNT(vote.id) as quantidade_votos')
+                'movie.id',
+                'movie.title',
+                'movie.description',
+                'movie.duration',
+                'movie.age_classification',
+                'genre.name as genre_name',
+                'type_entertainment.name as type_entertainment_name',
+                DB::raw('COUNT(vote.id) as quantity_vote')
+            )
+            ->groupBy(
+                'movie.title',
+                'movie.description',
+                'movie.duration',
+                'movie.age_classification',
+                'genre.name',
+                'type_entertainment.name'
+            )
+            ->get();
+    }
+
+    public static function getGenreTypeVoteWithoutDescription(): mixed
+    {
+        return Movie::join('genre', 'movie.genre_id', '=', 'genre.id')
+            ->join('type_entertainment', 'movie.type_entertainment_id', '=', 'type_entertainment.id')
+            ->leftJoin('vote', 'movie.id', '=', 'vote.movie_id')
+            ->select(
+                'movie.title',
+                'movie.description',
+                'movie.duration',
+                'movie.age_classification',
+                'genre.name as genre_name',
+                'type_entertainment.name as type_entertainment_name',
+                DB::raw('COUNT(vote.id) as quantity_vote')
             )
             ->groupBy(
                 'movie.title',
