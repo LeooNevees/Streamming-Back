@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             TypeEntertainmentSeeder::class,
             MovieSeeder::class,
             VoteSeeder::class,
+            ImageMovieSeeder::class,
         ]);
     }
 }

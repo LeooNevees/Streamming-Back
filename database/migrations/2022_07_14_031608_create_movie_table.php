@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('duration');
             $table->string('age_classification');
+            $table->char('year_entry', 4);
             $table->unsignedBigInteger('genre_id');
             $table->unsignedBigInteger('type_entertainment_id');
             $table->unsignedBigInteger('created_user_id');

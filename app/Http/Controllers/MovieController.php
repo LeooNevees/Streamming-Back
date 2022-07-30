@@ -39,6 +39,7 @@ class MovieController extends Controller
     public function create(MovieRequest $request)
     {
         try {
+            Log::info($request);
             $returnMovie = (new MovieService)->create($request->all());
             if ($returnMovie['error'] == true) {
                 throw new Exception($returnMovie['message'], 422);
@@ -65,6 +66,24 @@ class MovieController extends Controller
             }
 
             return response(['error' => false, 'message' => $returnData['message']], 200);
+        } catch (\Throwable $th) {
+            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function image($id)
+    {
+        try {
+            $returnData = (new MovieService)->image($id);
+            if ($returnData['error'] == true) {
+                throw new Exception($returnData['message'], 422);
+            }
+            return response()->file(storage_path($returnData['image']));
         } catch (\Throwable $th) {
             return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }

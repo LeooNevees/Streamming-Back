@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\ImageMovie;
 use App\Models\Movie;
 use App\Repository\MovieRepo;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class MovieService
 {
@@ -37,15 +41,29 @@ class MovieService
                 throw new Exception($returnValidate['message']);
             }
 
-            if (MovieRepo::create($params) === false) {
-                throw new Exception("Erro ao salvar Filme ou Série");
+            DB::beginTransaction();
+
+            $returnMovie = MovieRepo::create($params);
+            if ($returnMovie === false) {
+                throw new Exception("Erro ao salvar Filme/Série");
             }
+
+            $params['movie_id'] = $returnMovie->id;
+            if (isset($params['image']) && !empty($params['image'])) {
+                $params['path_image'] = $request['image']->store('movies');
+                if (MovieRepo::createImage($params) === false) {
+                    throw new Exception("Erro ao salvar Imagem do Filme/Série");
+                }
+            }
+
+            DB::commit();
 
             return [
                 'error' => false,
                 'message' => 'Filme ou Série criado com sucesso'
             ];
         } catch (\Throwable $th) {
+            DB::rollBack();
             return [
                 'error' => true,
                 'message' => $th->getMessage()
@@ -59,8 +77,9 @@ class MovieService
             $params = ValidateService::rectifyParams($request);
 
             $returnDatas = match (true) {
-                isset($params['description']) => MovieRepo::getGenreTypeVoteWithDescription($params['description']),
-                default => MovieRepo::getGenreTypeVoteWithoutDescription(),
+                isset($params['description']) => MovieRepo::getMoviesWithDescription($params['description']),
+                isset($params['id']) => MovieRepo::getMoviesWithWhere([['id', $params['id']]]),
+                default => MovieRepo::getMoviesWithWhere([]),
             };
             if ($returnDatas === false) {
                 throw new Exception("Erro ao buscar os Filmes/Séries. Por favor tente mais tarde");
@@ -69,6 +88,28 @@ class MovieService
             return [
                 'error' => false,
                 'message' => count($returnDatas) ? $returnDatas : 'Nenhum Filme/Série encontrado'
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'error' => true,
+                'message' => $th->getMessage()
+            ];
+        }
+    }
+
+    public function image(int $id): array
+    {
+        try {
+            $returnDatas = ImageMovie::where('movie_id', $id)
+                ->where('situation', 'A')
+                ->get();
+            if ($returnDatas === false) {
+                throw new Exception("Erro ao buscar os Filmes/Séries. Por favor tente mais tarde");
+            }
+
+            return [
+                'error' => false,
+                'image' => count($returnDatas) ? 'app/' . $returnDatas[0]->path_image : 'app/movies/notFound.png'
             ];
         } catch (\Throwable $th) {
             return [
@@ -122,15 +163,31 @@ class MovieService
                 throw new Exception("Filme/Série inexistente");
             }
 
-            if (!Movie::destroy($id)) {
+            DB::beginTransaction();
+
+            $returnImage = ImageMovie::where('movie_id', $id)->get();
+            if ($returnImage === false) {
+                throw new Exception("Erro ao encontrar Imagem do Filme");
+            }
+
+            if (count($returnImage)) {
+                if (ImageMovie::destroy($returnImage[0]->id) === false) {
+                    throw new Exception("Erro ao deletar Imagem do Filme");
+                }
+                Storage::disk('local')->delete($returnImage[0]->path_image);
+            }
+
+            if (Movie::destroy($id) === false) {
                 throw new Exception("Erro ao deletar Filme/Série");
             }
 
+            DB::commit();
             return [
                 'error' => false,
                 'message' => 'Filme/Série deletado com sucesso'
             ];
         } catch (\Throwable $th) {
+            DB::rollBack();
             return [
                 'error' => true,
                 'message' => $th->getMessage()

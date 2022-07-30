@@ -21,7 +21,7 @@ class GroupUserSeeder extends Seeder
                 'administrator_privilege' => true,
             ],
             2 => [
-                'name' => 'PÚBLICO',
+                'name' => 'GERAL',
                 'administrator_privilege' => false,
             ],
             3 => [

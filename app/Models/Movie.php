@@ -15,6 +15,7 @@ class Movie extends Model
         'description',
         'duration',
         'age_classification',
+        'year_entry',
         'genre_id',
         'type_entertainment_id',
         'created_user_id',

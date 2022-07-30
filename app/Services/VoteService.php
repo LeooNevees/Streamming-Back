@@ -34,14 +34,14 @@ class VoteService
         }
     }
 
-    public function destroy($id)
+    public function destroy($user)
     {
         try {
-            if (empty(trim($id))) {
-                throw new Exception("Necessário fornecer o ID da Votação");
+            if (empty(trim($user))) {
+                throw new Exception("Necessário fornecer o ID do Usuário");
             }
 
-            $returnVote = Vote::where('id', $id)->get();
+            $returnVote = Vote::where('users_id', $user)->get();
             if ($returnVote === false) {
                 throw new Exception("Erro ao buscar a Votação. Por favor tente mais tarde");
             }
@@ -49,7 +49,7 @@ class VoteService
                 throw new Exception("Votação inexistente");
             }
 
-            if (!Vote::destroy($id)) {
+            if (!Vote::where('users_id', $user)->delete()) {
                 throw new Exception("Erro ao deletar Votação");
             }
 

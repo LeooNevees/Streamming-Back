@@ -25,8 +25,7 @@ class VoteRequest extends FormRequest
     {
         return [
             'movie_id' => 'required|integer',
-            'title' => 'required|string|max:50',
-            'description' => 'required|string|max:200',
+            'users_id' => 'required|integer',
         ];
     }
 
@@ -40,10 +39,9 @@ class VoteRequest extends FormRequest
         return [
             'movie_id.required' => 'Necessário fornecer o Id do Filme/Série',
             'movie_id.integer' => 'Necessário que ID Filme/Série seja seja número inteiro',
-            'title.required' => 'Necessário fornecer o Título da avaliação',
-            'title.max' => 'Necessário que o Título possua no máximo 50 caracteres',
-            'description.required' => 'Necessário fornecer a Descrição da avaliação',
-            'description.max' => 'Necessário que a Descrição possua no máximo 200 caracteres',
+            
+            'users_id.required' => 'Necessário fornecer o Id do Usuário',
+            'users_id.integer' => 'Necessário que ID Usuário seja seja número inteiro',
         ];
     }
 

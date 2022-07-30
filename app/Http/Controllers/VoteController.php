@@ -33,10 +33,10 @@ class VoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($user)
     {
         try {
-            $returnVote = (new VoteService)->destroy($id);
+            $returnVote = (new VoteService)->destroy($user);
             if ($returnVote['error'] == true) {
                 throw new Exception($returnVote['message'], 422);
             }

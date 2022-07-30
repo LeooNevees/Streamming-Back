@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('vote', function (Blueprint $table) {
+        Schema::create('image_movie', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('users_id');
+            $table->string('path_image');
             $table->unsignedBigInteger('movie_id');
             $table->char('situation', 1);
             $table->timestamps();
-
-            $table->foreign('users_id')->references('id')->on('users');
             $table->foreign('movie_id')->references('id')->on('movie');
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vote');
+        Schema::dropIfExists('image_movie');
     }
 };

@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\TypeEntertainmentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
@@ -35,15 +36,29 @@ Route::group(['prefix' => 'user'], function () {
 /* End Points - Filmes e Séries */
 Route::group(['prefix' => 'movies'], function () {
 
-    Route::get('/', [MovieController::class, 'index']);
+    // Route::get('/', [MovieController::class, 'index']);
 
     Route::get('/show', [MovieController::class, 'show']);
+
+    Route::get('/image/{id}', [MovieController::class, 'image']);
 
     Route::post('/create', [MovieController::class, 'create']);
 
     Route::put('/update/{id}', [MovieController::class, 'update']);
 
     Route::delete('/destroy/{id}', [MovieController::class, 'destroy']);
+});
+
+/* End Points - Votação */
+Route::group(['prefix' => 'genre'], function () {
+
+    Route::get('/', [GenreController::class, 'index']);
+});
+
+/* End Points - Votação */
+Route::group(['prefix' => 'typeEntertainment'], function () {
+
+    Route::get('/', [TypeEntertainmentController::class, 'index']);
 });
 
 /* End Points - Votação */

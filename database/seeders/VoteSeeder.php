@@ -16,8 +16,6 @@ class VoteSeeder extends Seeder
     public function run()
     {
         Vote::insert([
-            'title' => 'ADOREI',
-            'description' => 'O MELHOR FILME QUE JÁ ASSISTI',
             'users_id' => 1,
             'movie_id' => 1,
             'situation' => 'A',

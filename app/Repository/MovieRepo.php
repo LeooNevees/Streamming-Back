@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\ImageMovie;
 use App\Models\Movie;
 use App\Models\Vote;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +17,10 @@ class MovieRepo
             'description' => $params['description'],
             'duration' => $params['duration'],
             'age_classification' => $params['age_classification'],
+            'year_entry' => $params['year_entry'],
             'genre_id' => $params['genre'],
             'type_entertainment_id' => $params['type_entertainment'],
-            'created_user_id' => 1,
+            'created_user_id' => $params['user'],
             'situation' => 'A',
         ]);
     }
@@ -36,58 +38,31 @@ class MovieRepo
         ]);
     }
 
-    public static function getGenreTypeVoteWithDescription(string $description): mixed
+    public static function getMoviesWithDescription(string $description, $orderBy = ['quantity_vote', 'desc']): mixed
     {
-        return Movie::join('genre', 'movie.genre_id', '=', 'genre.id')
-            ->join('type_entertainment', 'movie.type_entertainment_id', '=', 'type_entertainment.id')
-            ->leftJoin('vote', 'movie.id', '=', 'vote.movie_id')
-            ->where('movie.title', 'like', "%$description%")
-            ->orWhere('movie.description', 'like', "%$description%")
-            ->orWhere('genre.name', 'like', "%$description%")
-            ->orWhere('type_entertainment.name', 'like', "%$description%")
-            ->select(
-                'movie.id',
-                'movie.title',
-                'movie.description',
-                'movie.duration',
-                'movie.age_classification',
-                'genre.name as genre_name',
-                'type_entertainment.name as type_entertainment_name',
-                DB::raw('COUNT(vote.id) as quantity_vote')
-            )
-            ->groupBy(
-                'movie.title',
-                'movie.description',
-                'movie.duration',
-                'movie.age_classification',
-                'genre.name',
-                'type_entertainment.name'
-            )
+        return DB::table('vw_movies')
+            ->where('title', 'like', "%$description%")
+            ->orWhere('description', 'like', "%$description%")
+            ->orWhere('genre_name', 'like', "%$description%")
+            ->orWhere('type_entertainment_name', 'like', "%$description%")
+            ->orderby($orderBy[0], $orderBy[1])
             ->get();
     }
 
-    public static function getGenreTypeVoteWithoutDescription(): mixed
+    public static function getMoviesWithWhere($conditions, $orderBy = ['quantity_vote', 'desc']): mixed
     {
-        return Movie::join('genre', 'movie.genre_id', '=', 'genre.id')
-            ->join('type_entertainment', 'movie.type_entertainment_id', '=', 'type_entertainment.id')
-            ->leftJoin('vote', 'movie.id', '=', 'vote.movie_id')
-            ->select(
-                'movie.title',
-                'movie.description',
-                'movie.duration',
-                'movie.age_classification',
-                'genre.name as genre_name',
-                'type_entertainment.name as type_entertainment_name',
-                DB::raw('COUNT(vote.id) as quantity_vote')
-            )
-            ->groupBy(
-                'movie.title',
-                'movie.description',
-                'movie.duration',
-                'movie.age_classification',
-                'genre.name',
-                'type_entertainment.name'
-            )
+        return DB::table('vw_movies')
+            ->where($conditions)
+            ->orderby($orderBy[0], $orderBy[1])
             ->get();
+    }
+
+    public static function createImage(array $params): mixed
+    {
+        return ImageMovie::create([
+            'path_image' => $params['path_image'],
+            'movie_id' => $params['movie_id'],
+            'situation' => 'A',
+        ]);
     }
 }
