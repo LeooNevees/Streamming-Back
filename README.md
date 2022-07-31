@@ -9,6 +9,6 @@ docker run --rm \
 laravelsail/php81-composer:latest \
 composer install --ignore-platform-reqs 
 
-    3 - Ainda no terminal, rodar o comando para iniciar a aplicação: ./vendor/bin/sail up -d
-    4 - Em seguida, ainda no terminal, rodar o comando para configurar a aplicação: ./vendor/bin/sail artisan init
-    5 - Para finalizar a aplicação, rodar o comando: ./vendor/bin/sail stop
+    3 - Ainda no terminal, rodar o comando para iniciar a aplicação: php artisan init
+
+    4 - Após análise, necessário rodar comando para encerrar a aplicação: php artisan exit
