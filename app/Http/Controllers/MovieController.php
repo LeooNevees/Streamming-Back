@@ -6,6 +6,7 @@ use App\Http\Requests\MovieRequest;
 use App\Services\MovieService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MovieController extends Controller
 {
@@ -76,6 +77,7 @@ class MovieController extends Controller
     {
         try {
             $returnData = (new MovieService)->image($id);
+            Log::info($returnData);
             if ($returnData['error'] == true) {
                 throw new Exception($returnData['message'], 422);
             }

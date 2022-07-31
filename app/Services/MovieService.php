@@ -43,7 +43,7 @@ class MovieService
             }
 
             $user = Auth::user();
-            $params['user'] = $user->id; 
+            $params['user'] = $user->id;
 
             DB::beginTransaction();
 
@@ -54,7 +54,7 @@ class MovieService
 
             $params['movie_id'] = $returnMovie->id;
             if (isset($params['image']) && !empty($params['image'])) {
-                $params['path_image'] = $request['image']->store('movies');
+                $params['path_image'] = "movies/" . $request['image']->store('', 'movies');
                 if (MovieRepo::createImage($params) === false) {
                     throw new Exception("Erro ao salvar Imagem do Filme/Série");
                 }
@@ -113,7 +113,7 @@ class MovieService
 
             return [
                 'error' => false,
-                'image' => count($returnDatas) ? 'app/' . $returnDatas[0]->path_image : 'app/movies/notFound.png'
+                'image' => count($returnDatas) ? $returnDatas[0]->path_image : 'movies/notFound.png'
             ];
         } catch (\Throwable $th) {
             return [
@@ -183,7 +183,7 @@ class MovieService
                 Storage::disk('local')->delete($returnImage[0]->path_image);
             }
 
-            if(Vote::where('movie_id', $id)->delete() === false) {
+            if (Vote::where('movie_id', $id)->delete() === false) {
                 throw new Exception("Erro ao delete votação para Filme");
             }
 
