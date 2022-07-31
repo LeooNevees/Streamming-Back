@@ -15,7 +15,3 @@ if [ $# -gt 0 ]; then
 else
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
-
-cp /var/www/html/.env.example /var/www/html/.env 
-cp .env.example /var/www/html/.env 
-cp .env.example .env 
