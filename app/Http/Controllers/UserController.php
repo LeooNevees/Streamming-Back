@@ -9,66 +9,57 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function create(UserRequest $request)
-    // {
-    //     try {
-    //         $returnUser = (new UserService)->create($request->all());
-    //         if ($returnUser['error'] == true) {
-    //             throw new Exception($returnUser['message'], 422);
-    //         }
-
-    //         return response(['error' => false, 'message' => $returnUser['message']], 200);
-    //     } catch (\Throwable $th) {
-    //         return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
-    //     }
-    // }
-
-    public function register(Request $request)
+    public function __construct()
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = Auth::login($user);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User created successfully',
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-
     /**
-     * Update the specified resource in storage.
-     *
+     * Register User.
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function register(UserRequest $request)
     {
-        //
+        try {
+            $returnUser = (new UserService)->register($request->all());
+            if ($returnUser['error'] == true) {
+                throw new Exception($returnUser['message'], 422);
+            }
+
+            return response()->json($returnUser, 201);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
+    }
+
+    /**
+     * Validation Login
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|string|email',
+                'password' => 'required|string',
+            ]);
+
+            $returnUser = (new UserService)->login($request->all());
+            if ($returnUser['error'] == true) {
+                throw new Exception($returnUser['message'], 401);
+            }
+
+            return response()->json($returnUser, 200);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
     }
 
     /**
@@ -85,57 +76,52 @@ class UserController extends Controller
                 throw new Exception($returnUser['message'], 422);
             }
 
-            return response(['error' => false, 'message' => $returnUser['message']], 200);
+            return response()->json($returnUser, 200);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
-    }
-
-    public function auth(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        $token = Auth::attempt($request->all());
-
-        if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-
-        $user = Auth::user();
-        return response()->json([
-            'status' => 'success',
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
     }
 
     public function refresh()
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        try {
+            return response()->json([
+                'error' => 'false',
+                'message' => 'Realizado geração de novo Token',
+                'authorization' => [
+                    'token' => Auth::refresh(),
+                    'type' => 'bearer',
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
     }
 
     public function logout()
     {
-        Auth::logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
+        try {
+            Auth::logout();
+            return response()->json([
+                'error' => 'false',
+                'message' => 'Logout realizado com sucesso',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
+    }
+
+    public function show()
+    {
+        try {
+            $returnUser = (new UserService)->show();
+            if($returnUser['error']){
+                throw new Exception($returnUser['message'], 422);
+            }
+
+            return response()->json($returnUser, 200);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+        }
     }
 }

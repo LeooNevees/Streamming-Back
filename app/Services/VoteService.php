@@ -24,7 +24,7 @@ class VoteService
 
             return [
                 'error' => false,
-                'message' => 'Votação salva com sucesso'
+                'message' => 'Votação salvo com sucesso'
             ];
         } catch (\Throwable $th) {
             return [

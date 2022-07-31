@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('genre', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('description');
             $table->unsignedBigInteger('created_user_id');
             $table->char('situation', 1);
             $table->timestamps();

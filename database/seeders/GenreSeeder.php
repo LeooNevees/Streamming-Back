@@ -18,21 +18,26 @@ class GenreSeeder extends Seeder
         $genres = [
             1 => [
                 'name' => 'AÇÃO',
-                'description' => mb_strtoupper('Um filme de ação é um gênero de filme que geralmente envolve uma história de protagonistas do bem contra antagonistas do mal, que resolvem suas disputas com o uso de força física, neles o bem sempre prevalece sobre o mal'),
             ],
             2 => [
-                'name' => 'ROMANCE',
-                'description' => mb_strtoupper('Os filmes do gênero romance podem ser definidos como aqueles cujo enredo se desenvolve em torno de um envolvimento amoroso entre os protagonistas.')
+                'name' => 'AVENTURA',
             ],
             3 => [
-                'name' => 'AVENTURA',
-                'description' => mb_strtoupper('O filme de aventura é um gênero cinematográfico que pode ser caracterizado como uma história onde um herói enfrenta uma série de obstáculos, exibindo coragem ao enfrentar situações que fogem ao cotidiano')
-            ]
+                'name' => 'DRAMA',
+            ],
+            4 => [
+                'name' => 'COMÉDIA',
+            ],
+            5 => [
+                'name' => 'FICÇÃO CIENTÍFICA',
+            ],
+            5 => [
+                'name' => 'TERROR',
+            ],
         ];
         foreach ($genres as $genre) {
             Genre::insert([
                 'name' => $genre['name'],
-                'description' => $genre['description'],
                 'created_user_id' => '1',
                 'situation' => 'A',
                 'created_at' => date('Y-m-d H:i:s'),

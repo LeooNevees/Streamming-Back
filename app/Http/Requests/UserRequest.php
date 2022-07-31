@@ -24,9 +24,10 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:250',
-            'email' => 'required|string|max:250|email:rfc,dns',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:5|max:15',
+            'group_user' => 'required',
         ];
     }
 
@@ -46,6 +47,7 @@ class UserRequest extends FormRequest
             'password.required' => 'Necessário fornecer a Senha',
             'password.min' => 'Necessário que a Senha possua no mínimo 5 caracteres',
             'password.max' => 'Necessário que a Senha possua no máximo 15 caracteres',
+            'group_user.required' => 'Necessário fornecer o Grupo do Usuário',
         ];
     }
 }

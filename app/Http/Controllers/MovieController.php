@@ -25,9 +25,9 @@ class MovieController extends Controller
                 throw new Exception($returnMovie['message'], 400);
             }
 
-            return response(['error' => false, 'message' => $returnMovie['message']], 200);
+            return response()->json(['error' => false, 'message' => $returnMovie['message']], 200);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
     }
 
@@ -39,15 +39,14 @@ class MovieController extends Controller
     public function create(MovieRequest $request)
     {
         try {
-            Log::info($request);
             $returnMovie = (new MovieService)->create($request->all());
             if ($returnMovie['error'] == true) {
                 throw new Exception($returnMovie['message'], 422);
             }
 
-            return response(['error' => false, 'message' => $returnMovie['message']], 201);
+            return response()->json($returnMovie, 201);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
     }
 
@@ -65,9 +64,9 @@ class MovieController extends Controller
                 throw new Exception($returnData['message'], 422);
             }
 
-            return response(['error' => false, 'message' => $returnData['message']], 200);
+            return response()->json($returnData, 200);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
     }
 
@@ -85,7 +84,7 @@ class MovieController extends Controller
             }
             return response()->file(storage_path($returnData['image']));
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
     }
 
@@ -104,9 +103,9 @@ class MovieController extends Controller
                 throw new Exception($returnMovie['message'], 422);
             }
 
-            return response(['error' => false, 'message' => $returnMovie['message']], 201);
+            return response()->json($returnMovie, 201);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
     }
 
@@ -124,21 +123,9 @@ class MovieController extends Controller
                 throw new Exception($returnMovie['message'], 422);
             }
 
-            return response(['error' => false, 'message' => $returnMovie['message']], 200);
+            return response()->json($returnMovie, 200);
         } catch (\Throwable $th) {
-            return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
+            return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
-    }
-
-    /**
-     * List Entertainments search
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function browse()
-    {
-    
-        $movies = Movie::all();
-        return view('movie.browse', compact('movies'));
     }
 }

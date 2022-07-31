@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Genre;
+use App\Models\GroupUser;
 use App\Models\Movie;
 use App\Models\TypeEntertainment;
 use App\Models\User;
@@ -10,6 +11,7 @@ use App\Models\Vote;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Stmt\GroupUse;
 
 class ValidateService
 {
@@ -96,7 +98,7 @@ class ValidateService
                 throw new Exception("Filme ou Série não encontrado com esse ID");
             }
 
-            $returnVote = Vote::where('users_id', 1)
+            $returnVote = Vote::where('users_id', $params['users_id'])
                 ->get();
             if ($returnVote === false) {
                 throw new Exception("Erro ao verificar se já existe Votação para esse usuário");
@@ -131,9 +133,17 @@ class ValidateService
                 throw new Exception("Usuário já cadastro com esse e-mail");
             }
 
-            $params['password'] = Hash::make($password);
-            $params['situation'] = 'A';
+            $returnGroup = GroupUser::where('id', $params['group_user'])
+                ->where('situation', 'A')
+                ->get();
+            if ($returnGroup === false) {
+                throw new Exception("Erro ao verificar Grupo do Usuário. Por favor tente mais tarde");
+            }
+            if (!count($returnGroup)) {
+                throw new Exception("Grupo de Usuário inválido");
+            }
 
+            $params['password'] = Hash::make($password);
             return [
                 'error' => false,
                 'params' => $params,

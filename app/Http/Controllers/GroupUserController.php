@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\TypeEntertainmentService;
+use App\Services\GroupUserService;
 use Exception;
 use Illuminate\Http\Request;
 
-class TypeEntertainmentController extends Controller
+class GroupUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,12 @@ class TypeEntertainmentController extends Controller
     public function index()
     {
         try {
-            $returnTypes = (new TypeEntertainmentService)->index();
-            if ($returnTypes['error'] == true) {
-                throw new Exception($returnTypes['message'], 400);
+            $returnGroups = (new GroupUserService)->index();
+            if ($returnGroups['error'] == true) {
+                throw new Exception($returnGroups['message'], 400);
             }
 
-            return response()->json(['error' => false, 'message' => $returnTypes['message']], 200);
+            return response()->json($returnGroups, 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }

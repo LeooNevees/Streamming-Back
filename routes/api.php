@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\GroupUserController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\TypeEntertainmentController;
 use App\Http\Controllers\UserController;
@@ -18,19 +20,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-
 /* End Points - Usuários */
 Route::group(['prefix' => 'user'], function () {
 
     Route::post('/register', [UserController::class, 'register']);
 
-    Route::post('/auth', [UserController::class, 'auth']);
+    Route::post('/login', [UserController::class, 'login']);
 
-    Route::delete('/destroy/{id}', [UserController::class, 'destroy']);
+    Route::get('/show', [UserController::class, 'show'])->middleware('auth:api');
+
+    Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:api');
+
+    Route::post('/refresh', [UserController::class, 'refresh'])->middleware('auth:api');
+
+    Route::delete('/destroy/{id}', [UserController::class, 'destroy'])->middleware('auth:api');
 });
 
 /* End Points - Filmes e Séries */
@@ -42,29 +45,36 @@ Route::group(['prefix' => 'movies'], function () {
 
     Route::get('/image/{id}', [MovieController::class, 'image']);
 
-    Route::post('/create', [MovieController::class, 'create']);
+    Route::post('/create', [MovieController::class, 'create'])->middleware('auth:api');
 
-    Route::put('/update/{id}', [MovieController::class, 'update']);
+    Route::put('/update/{id}', [MovieController::class, 'update'])->middleware('auth:api');
 
-    Route::delete('/destroy/{id}', [MovieController::class, 'destroy']);
+    Route::delete('/destroy/{id}', [MovieController::class, 'destroy'])->middleware('auth:api');
 });
 
-/* End Points - Votação */
+/* End Points - Gêneros */
 Route::group(['prefix' => 'genre'], function () {
 
     Route::get('/', [GenreController::class, 'index']);
 });
 
-/* End Points - Votação */
+/* End Points - Tipos Entretenimento */
 Route::group(['prefix' => 'typeEntertainment'], function () {
 
     Route::get('/', [TypeEntertainmentController::class, 'index']);
 });
 
+/* End Points - Grupos de Usuários */
+Route::group(['prefix' => 'groups'], function () {
+
+    Route::get('/', [GroupUserController::class, 'index']);
+});
+
 /* End Points - Votação */
 Route::group(['prefix' => 'vote'], function () {
 
-    Route::post('/create', [VoteController::class, 'create']);
+    Route::post('/create', [VoteController::class, 'create'])->middleware('auth:api');
 
-    Route::delete('/destroy/{id}', [VoteController::class, 'destroy']);
+    Route::delete('/destroy/{id}', [VoteController::class, 'destroy'])->middleware('auth:api');
 });
+

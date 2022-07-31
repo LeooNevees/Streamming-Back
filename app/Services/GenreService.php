@@ -10,7 +10,7 @@ class GenreService
     public function index(): array
     {
         try {
-            $genres = Genre::where('situation', 'A')->get();
+            $genres = Genre::where('situation', 'A')->select('id', 'name')->get();
             if ($genres === false) {
                 throw new Exception("Erro ao buscar Gêneros. Por favor tente novamente mais tarde");
             }

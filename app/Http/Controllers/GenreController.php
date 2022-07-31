@@ -20,7 +20,7 @@ class GenreController extends Controller
                 throw new Exception($returnGenre['message'], 400);
             }
 
-            return response(['error' => false, 'message' => $returnGenre['message']], 200);
+            return response()->json(['error' => false, 'message' => $returnGenre['message']], 200);
         } catch (\Throwable $th) {
             return response(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
