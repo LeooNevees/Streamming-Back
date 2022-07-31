@@ -28,8 +28,9 @@ class InitApplication extends Command
     public function handle()
     {
         copy('.env.example', '.env');
-        shell_exec('php artisan jwt:secret');
-        shell_exec('sail artisan migrate:fresh --seed');
-        echo 'Finalizou configuração';
+        $retJwt = shell_exec('php artisan jwt:secret');
+        $retSail = shell_exec('./vendor/bin/sail up -d');
+        $retMigrate = shell_exec('./vendor/bin/sail artisan migrate:fresh --seed');
+        echo "\nIniciou aplicação\n";
     }
 }
