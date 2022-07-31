@@ -77,7 +77,6 @@ class MovieController extends Controller
     {
         try {
             $returnData = (new MovieService)->image($id);
-            Log::info($returnData);
             if ($returnData['error'] == true) {
                 throw new Exception($returnData['message'], 422);
             }
