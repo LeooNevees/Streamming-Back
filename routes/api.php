@@ -72,6 +72,6 @@ Route::group(['prefix' => 'vote'], function () {
 
     Route::post('/create', [VoteController::class, 'create'])->middleware('auth:api');
 
-    Route::delete('/destroy/{id}', [VoteController::class, 'destroy'])->middleware('auth:api');
+    Route::delete('/destroy', [VoteController::class, 'destroy'])->middleware('auth:api');
 });
 

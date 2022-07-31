@@ -1,5 +1,14 @@
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+Inicialização:
+    1 - Necessário ter docker instalado na máquina;
+    2 - Entrar na pasta raiz do projeto e executar o seguinte comando pelo terminal:
 
+docker run --rm \
+-u "$(id -u):$(id -g)" \
+-v $(pwd):/var/www/html \
+-w /var/www/html \
+laravelsail/php81-composer:latest \
+composer install --ignore-platform-reqs 
 
-
-sail artisan migrate:fresh --seed
+    3 - Ainda no terminal, rodar o comando para iniciar a aplicação: ./vendor/bin/sail up -d
+    4 - Para alinhamento do banco de dados, rodar o comando: sail artisan migrate:fresh --seed;
+    5 - Para finalizar a aplicação, rodar o comando: ./vendor/bin/sail stop

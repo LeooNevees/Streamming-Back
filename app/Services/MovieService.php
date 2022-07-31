@@ -7,6 +7,7 @@ use App\Models\Movie;
 use App\Models\Vote;
 use App\Repository\MovieRepo;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,6 +41,9 @@ class MovieService
             if ($returnValidate['error']) {
                 throw new Exception($returnValidate['message']);
             }
+
+            $user = Auth::user();
+            $params['user'] = $user->id; 
 
             DB::beginTransaction();
 
@@ -127,10 +131,12 @@ class MovieService
             }
 
             $params = ValidateService::rectifyParams($request);
+
             $returnValidate = ValidateService::paramsUpdateMovie($params, $id);
             if ($returnValidate['error']) {
                 throw new Exception($returnValidate['message']);
             }
+
 
             if (MovieRepo::update($id, $params) === false) {
                 throw new Exception("Erro ao atualizar Filme ou Série");

@@ -25,7 +25,6 @@ class VoteRequest extends FormRequest
     {
         return [
             'movie_id' => 'required|integer',
-            'users_id' => 'required|integer',
         ];
     }
 
@@ -39,9 +38,6 @@ class VoteRequest extends FormRequest
         return [
             'movie_id.required' => 'Necessário fornecer o Id do Filme/Série',
             'movie_id.integer' => 'Necessário que ID Filme/Série seja seja número inteiro',
-            
-            'users_id.required' => 'Necessário fornecer o Id do Usuário',
-            'users_id.integer' => 'Necessário que ID Usuário seja seja número inteiro',
         ];
     }
 

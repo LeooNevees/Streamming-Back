@@ -5,14 +5,24 @@ namespace App\Services;
 use App\Models\Vote;
 use App\Repository\VoteRepo;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class VoteService
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $user = Auth::user();
+        $this->user = $user->id;
+    }
 
     public function create(array $request): array
     {
         try {
             $params = ValidateService::rectifyParams($request);
+            $params['users_id'] = $this->user;
+
             $returnValidate = ValidateService::paramsCreateVote($params);
             if ($returnValidate['error']) {
                 throw new Exception($returnValidate['message']);
@@ -34,13 +44,10 @@ class VoteService
         }
     }
 
-    public function destroy($user)
+    public function destroy()
     {
         try {
-            if (empty(trim($user))) {
-                throw new Exception("Necessário fornecer o ID do Usuário");
-            }
-
+            $user = $this->user;
             $returnVote = Vote::where('users_id', $user)->get();
             if ($returnVote === false) {
                 throw new Exception("Erro ao buscar a Votação. Por favor tente mais tarde");

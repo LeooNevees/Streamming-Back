@@ -32,7 +32,6 @@ class MovieRequest extends FormRequest
             'year_entry' => 'required|date_format:Y|size:4',
             'genre' => 'required|integer',
             'type_entertainment' => 'required|integer',
-            'user' => 'required|integer',
         ];
     }
 

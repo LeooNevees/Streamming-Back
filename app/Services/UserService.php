@@ -146,6 +146,11 @@ class UserService
     public function show()
     {
         try {
+            $user = Auth::user();
+            if($user->group_user_id != 1 || $user->situation != 'A') {
+                throw new Exception("Usuário sem permissão");
+            }
+
             $users = UserRepo::show();
             if ($users === false) {
                 throw new Exception("Erro ao buscar os Usuários. Por favor tente mais tarde");
