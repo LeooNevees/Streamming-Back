@@ -17,3 +17,5 @@ else
 fi
 
 cp /var/www/html/.env.example /var/www/html/.env 
+cp .env.example /var/www/html/.env 
+cp .env.example .env 
