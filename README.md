@@ -1,5 +1,5 @@
 Inicialização:
-    1 - Necessário ter docker instalado na máquina;
+    1 - Necessário ter Docker e Docker-Compose instalados na máquina;
     2 - Entrar na pasta raiz do projeto e executar o seguinte comando pelo terminal:
 
 docker run --rm \
@@ -10,5 +10,5 @@ laravelsail/php81-composer:latest \
 composer install --ignore-platform-reqs 
 
     3 - Ainda no terminal, rodar o comando para iniciar a aplicação: ./vendor/bin/sail up -d
-    4 - Para alinhamento do banco de dados, rodar o comando: sail artisan migrate:fresh --seed;
+    4 - Para alinhamento do banco de dados, rodar o comando: ./vendor/bin/sail artisan migrate:fresh --seed;
     5 - Para finalizar a aplicação, rodar o comando: ./vendor/bin/sail stop
