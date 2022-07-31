@@ -34,15 +34,6 @@ class MovieSeeder extends Seeder
                 'genre_id' => "1",
                 'type_entertainment_id' => "1",
             ],
-            3 => [
-                'title' => "LOKI",
-                'description' => mb_strtoupper("Loki, Deus da Trapaça, sai da sombra de seu irmão para embarcar em uma aventura que ocorre após os eventos de 'Vingadores: Ultimato'"),
-                'duration' => "360",
-                'age_classification' => "14",
-                'year_entry' => "2021",
-                'genre_id' => "3",
-                'type_entertainment_id' => "2",
-            ],
         ];
         foreach ($movies as $movie) {
             Movie::insert([

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\TypeEntertainmentService;
 use Exception;
-use Illuminate\Http\Request;
 
 class TypeEntertainmentController extends Controller
 {
@@ -21,7 +20,7 @@ class TypeEntertainmentController extends Controller
                 throw new Exception($returnTypes['message'], 400);
             }
 
-            return response()->json(['error' => false, 'message' => $returnTypes['message']], 200);
+            return response()->json($returnTypes, 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }

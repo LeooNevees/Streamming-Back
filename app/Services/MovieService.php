@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Models\ImageMovie;
 use App\Models\Movie;
+use App\Models\Vote;
 use App\Repository\MovieRepo;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class MovieService
@@ -175,6 +175,10 @@ class MovieService
                     throw new Exception("Erro ao deletar Imagem do Filme");
                 }
                 Storage::disk('local')->delete($returnImage[0]->path_image);
+            }
+
+            if(Vote::where('movie_id', $id)->delete() === false) {
+                throw new Exception("Erro ao delete votação para Filme");
             }
 
             if (Movie::destroy($id) === false) {

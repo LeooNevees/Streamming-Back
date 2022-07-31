@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\GroupUserController;
 use App\Http\Controllers\MovieController;
@@ -38,8 +37,6 @@ Route::group(['prefix' => 'user'], function () {
 
 /* End Points - Filmes e Séries */
 Route::group(['prefix' => 'movies'], function () {
-
-    // Route::get('/', [MovieController::class, 'index']);
 
     Route::get('/show', [MovieController::class, 'show']);
 

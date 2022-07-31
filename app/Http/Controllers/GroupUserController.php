@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\GroupUserService;
 use Exception;
-use Illuminate\Http\Request;
 
 class GroupUserController extends Controller
 {
@@ -18,7 +17,7 @@ class GroupUserController extends Controller
         try {
             $returnGroups = (new GroupUserService)->index();
             if ($returnGroups['error'] == true) {
-                throw new Exception($returnGroups['message'], 400);
+                throw new Exception($returnGroups['message'], 422);
             }
 
             return response()->json($returnGroups, 200);

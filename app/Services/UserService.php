@@ -51,7 +51,6 @@ class UserService
     public function login(array $params): array
     {
         try {
-            // $credentials = $request->only('email', 'password');
             $token = JWTAuth::attempt($params);
 
             if (!$token) {
@@ -116,12 +115,9 @@ class UserService
                 throw new Exception("Necessário fornecer o ID do Usuário");
             }
 
-            $returnUser = User::where('id', $id)->get();
-            if ($returnUser === false) {
-                throw new Exception("Erro ao buscar o Usuário. Por favor tente mais tarde");
-            }
-            if (!count($returnUser)) {
-                throw new Exception("Usuário inexistente");
+            $returnValidate = ValidateService::paramsDeleteUser($id);
+            if($returnValidate['error']){
+                throw new Exception($returnValidate['message']);
             }
 
             DB::beginTransaction();

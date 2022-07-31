@@ -24,10 +24,6 @@ class ImageMovieSeeder extends Seeder
                 'path_image' => "movies/thor.jpeg",
                 'movie_id' => 2,
             ],
-            3 => [
-                'path_image' => "movies/loki.jpg",
-                'movie_id' => 3,
-            ],
         ];
         foreach ($images as $image) {
             ImageMovie::insert([

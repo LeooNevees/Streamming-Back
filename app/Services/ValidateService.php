@@ -9,17 +9,22 @@ use App\Models\TypeEntertainment;
 use App\Models\User;
 use App\Models\Vote;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Stmt\GroupUse;
 
 class ValidateService
 {
+    /**
+     * Tratamento dos parâmetros vindos da Request.
+     */
     public static function rectifyParams(array $params): array
     {
         return array_map('mb_strtoupper', array_map('trim', $params));
     }
 
+    /**
+     * Tratamento dos parâmetros vindos da Request para Criação do Filme/Série.
+     */
     public static function paramsCreateMovie(array $params): array
     {
         try {
@@ -59,6 +64,9 @@ class ValidateService
         }
     }
 
+    /**
+     * Tratamento dos parâmetros vindos da Request para Autalização do Filme/Série.
+     */
     public static function paramsUpdateMovie(array $params, int $id): array
     {
         try {
@@ -87,6 +95,9 @@ class ValidateService
         }
     }
 
+    /**
+     * Tratamento dos parâmetros vindos da Request para Criação do Voto.
+     */
     public static function paramsCreateVote(array $params): array
     {
         try {
@@ -119,6 +130,9 @@ class ValidateService
         }
     }
 
+    /**
+     * Tratamento dos parâmetros vindos da Request para Criação do Usuário.
+     */
     public static function paramsCreateUser(array $params): array
     {
         try {
@@ -147,6 +161,41 @@ class ValidateService
             return [
                 'error' => false,
                 'params' => $params,
+                'message' => 'Parâmetros validados com sucesso'
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'error' => true,
+                'message' => $th->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Tratamento dos parâmetros vindos da Request para Deletar o Usuário.
+     */
+    public static function paramsDeleteUser(int $id): array
+    {
+        try {
+            $user = Auth::user();
+            if($user->group_user_id != 1 || $user->situation != 'A') {
+                throw new Exception("Usuário sem permissão para deletar");
+            }
+
+            if($user->id == $id){
+                throw new Exception("Ação não permitida. O mesmo usuário não pode se excluir");
+            }
+
+            $returnUser = User::where('id', $id)->get();
+            if ($returnUser === false) {
+                throw new Exception("Erro ao buscar o Usuário. Por favor tente mais tarde");
+            }
+            if (!count($returnUser)) {
+                throw new Exception("Usuário inexistente");
+            }
+            
+            return [
+                'error' => false,
                 'message' => 'Parâmetros validados com sucesso'
             ];
         } catch (\Throwable $th) {

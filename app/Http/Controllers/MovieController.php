@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MovieRequest;
-use App\Models\Movie;
 use App\Services\MovieService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class MovieController extends Controller
 {
@@ -25,7 +22,7 @@ class MovieController extends Controller
                 throw new Exception($returnMovie['message'], 400);
             }
 
-            return response()->json(['error' => false, 'message' => $returnMovie['message']], 200);
+            return response()->json($returnMovie, 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => true, 'message' => $th->getMessage()], $th->getCode());
         }
